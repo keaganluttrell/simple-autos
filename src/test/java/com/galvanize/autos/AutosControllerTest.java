@@ -1,10 +1,22 @@
 package com.galvanize.autos;
 
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
 public class AutosControllerTest {
@@ -15,19 +27,46 @@ public class AutosControllerTest {
     @MockBean
     AutoService autoService;
 
-    /*
-        GET /api/autos
-        QUERY PARAMS: color, name
-          /api/autos?color=blue
-          /api/autos?make=ford
-          /api/autos?make=ford&color=red
-            200: at least one auto exists returns list of all autos matching queries
-            204: no autos found
-     */
+    List<Auto> autos;
 
+    @BeforeEach
+    void setUp() {
+        autos = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Auto auto = new Auto(1990, "ford", "t", "red", "joe", "123456789"+i);
+            autos.add(auto);
+        }
+    }
 
+    // GET /api/autos
+    // QUERY PARAMS: color, name
+    // /api/autos?color=blue
+    // /api/autos?make=ford
+    // /api/autos?make=ford&color=red
+    // 204: no autos found
 
-    /*
+    // GET /api/autos 200: at least one auto exists returns list of all autos matching queries
+    @Test
+    void getAllAutos_noParams_returnsList() throws Exception {
+        when(autoService.getAllAutos()).thenReturn(autos);
+        System.out.print(autos);
+
+        mockMvc.perform(get("/api/autos"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(10)));
+    }
+
+    // GET /api/autos ->  204: returns no autos found
+    @Test
+    void getAllAutos_noParams_returnNoContent() throws Exception {
+        when(autoService.getAllAutos()).thenReturn(new ArrayList<>());
+
+        mockMvc.perform(get("/api/autos"))
+                .andExpect(status().isNoContent());
+    }
+
+/*
         POST /api/autos
         NO PARAMS
         BODY: takes an automobile schema object
