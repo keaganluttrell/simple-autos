@@ -6,7 +6,7 @@ stages:
 build:
   stage: build
   script:
-    ./gradlew assemble
+    ./gradlew bootJar
   artifacts:
     paths:
       - build/libs/*.jar
