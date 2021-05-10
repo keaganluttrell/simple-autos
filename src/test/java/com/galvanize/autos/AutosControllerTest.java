@@ -1,10 +1,19 @@
 package com.galvanize.autos;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest
 public class AutosControllerTest {
+
+    @Autowired
+    MockMvc mockMvc;
+
+    @MockBean
+    AutoService autoService;
 
     /*
         GET /api/autos
@@ -15,6 +24,8 @@ public class AutosControllerTest {
             200: at least one auto exists returns list of all autos matching queries
             204: no autos found
      */
+
+
 
     /*
         POST /api/autos
