@@ -15,9 +15,9 @@ public class AutosController {
     AutoService autoService = new AutoService();
 
     @GetMapping
-    public ResponseEntity<List<Auto>> getAllAutos() {
-        List<Auto> foundAutos = autoService.getAllAutos();
-        if (foundAutos.size() == 0) {
+    public ResponseEntity<AutosList> getAllAutos() {
+        AutosList foundAutos = autoService.getAllAutos();
+        if (foundAutos.getAutos().size() == 0) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(foundAutos);

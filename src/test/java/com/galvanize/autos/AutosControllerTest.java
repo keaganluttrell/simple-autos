@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
+@WebMvcTest(AutosController.class)
 public class AutosControllerTest {
 
     @Autowired
@@ -48,7 +48,11 @@ public class AutosControllerTest {
     // GET /api/autos 200: at least one auto exists returns list of all autos matching queries
     @Test
     void getAllAutos_noParams_returnsList() throws Exception {
-        when(autoService.getAllAutos()).thenReturn(autos);
+//        ArrayList<Auto> autosNew = new ArrayList<>();
+//        Auto auto = new Auto(1990, "ford", "t", "red", "joe", "123456789");
+//        autosNew.add(auto);
+
+        when(autoService.getAllAutos()).thenReturn(new AutosList(autos));
         System.out.print(autos);
 
         mockMvc.perform(get("/api/autos"))
@@ -60,7 +64,7 @@ public class AutosControllerTest {
     // GET /api/autos ->  204: returns no autos found
     @Test
     void getAllAutos_noParams_returnNoContent() throws Exception {
-        when(autoService.getAllAutos()).thenReturn(new ArrayList<>());
+        when(autoService.getAllAutos()).thenReturn(new AutosList());
 
         mockMvc.perform(get("/api/autos"))
                 .andExpect(status().isNoContent());
