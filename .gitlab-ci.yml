@@ -1,19 +1,23 @@
-image: openjdk:11
-
 stages:
   - build
   - test
+
 build:
+  image: adoptopenjdk:11
   stage: build
   script:
-    ./gradlew bootJar
+    - ./gradlew bootJar
   artifacts:
     paths:
       - build/libs/*.jar
+
 test:
+  image: adoptopenjdk:11
+  needs:
+    - build
   stage: test
   script:
     ./gradlew test
   artifacts:
     paths:
-      - build/test-results/test/TEST*.xml
+      - build/test-results/test/*.xml
