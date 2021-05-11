@@ -30,7 +30,7 @@ public class AutoService {
     }
 
     public Auto getAutoByVin(String vin) {
-        return null;
+        return autoRepository.findByVin(vin);
     }
 
     public Auto updateAuto(String vin, String color, String owner) {

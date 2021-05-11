@@ -65,4 +65,24 @@ public class AutoServiceTest {
         assertNotNull(returnedAuto);
         assertEquals(auto.getMake(), returnedAuto.getMake());
     }
+
+    @Test
+    void getAutoByVin_valid_returnsAuto() {
+        Auto auto = new Auto(1999, "ford", "t", "red", "0001abc");
+
+        when(autoRepository.findByVin(anyString())).thenReturn(auto);
+
+        Auto actual = autoService.getAutoByVin("abc");
+        assertNotNull(actual);
+        assertEquals(actual.getMake(), "ford");
+    }
+
+    @Test
+    void getAutoByVin_valid_returnsNull() {
+        Auto auto;
+        when(autoRepository.findByVin(anyString())).thenReturn(null);
+
+        Auto actual = autoService.getAutoByVin("abc");
+        assertNull(actual);
+    }
 }
