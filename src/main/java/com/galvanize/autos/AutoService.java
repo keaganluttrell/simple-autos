@@ -1,18 +1,21 @@
 package com.galvanize.autos;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class AutoService {
 
-//    public AutoService() {}
+    AutoRepository autoRepository;
+
+    public AutoService() {
+    }
+
+    public AutoService(AutoRepository autoRepository) {
+        this.autoRepository = autoRepository;
+    }
 
     public AutosList getAllAutos() {
-        return null;
+        return new AutosList(autoRepository.findAll());
     }
 
     public AutosList getAllAutos(String make, String color) {
