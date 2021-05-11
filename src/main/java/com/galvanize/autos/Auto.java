@@ -2,13 +2,15 @@ package com.galvanize.autos;
 
 public class Auto {
 
-    private final int year;
-    private final String make;
-    private final String model;
-    private final String vin;
+    private int year;
+    private String make;
+    private String model;
+    private String vin;
 
     private String color;
     private String owner;
+
+    public Auto() {}
 
     public Auto(int year,
                 String make,

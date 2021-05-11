@@ -189,23 +189,23 @@ public class AutosControllerTest {
           204 auto not found
      */
 
-    @Test
-    void deleteAuto_withVin_returns202() throws Exception {
-        Auto auto = autos.get(0);
-
-        mockMvc.perform(delete("/api/autos/" + auto.getVin()))
-                .andExpect(status().isAccepted());
-
-        verify(autoService).deleteAuto(anyString());
-
-    }
-
-    @Test
-    void deleteAuto_withVin_returnsVehicleNotFound() throws Exception {
-
-        doThrow(new AutoNotFoundException()).when(autoService).deleteAuto(anyString());
-        mockMvc.perform(delete("/api/autos/vehicleNotFound"))
-                .andExpect(status().isNoContent());
-
-    }
+//    @Test
+//    void deleteAuto_withVin_returns202() throws Exception {
+//        Auto auto = autos.get(0);
+//
+//        mockMvc.perform(delete("/api/autos/" + auto.getVin()))
+//                .andExpect(status().isAccepted());
+//
+//        verify(autoService).deleteAuto(anyString());
+//
+//    }
+//
+//    @Test
+//    void deleteAuto_withVin_returnsVehicleNotFound() throws Exception {
+//
+//        doThrow(new AutoNotFoundException()).when(autoService).deleteAuto(anyString());
+//        mockMvc.perform(delete("/api/autos/vehicleNotFound"))
+//                .andExpect(status().isNoContent());
+//
+//    }
 }

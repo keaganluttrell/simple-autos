@@ -2,8 +2,10 @@ package com.galvanize.autos;
 
 public class UpdateOwnerRequest {
 
-    private final String owner;
-    private final String color;
+    private String owner;
+    private String color;
+
+    public UpdateOwnerRequest() {}
 
     public UpdateOwnerRequest(String owner, String color) {
         this.owner = owner;
