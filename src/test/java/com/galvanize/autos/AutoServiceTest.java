@@ -9,9 +9,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
@@ -105,5 +107,25 @@ public class AutoServiceTest {
 
         Auto actual = autoService.updateAuto(auto.getVin(), "yellow", "bob");
         assertNull(actual);
+    }
+
+    @Test
+    void deleteAuto_withVin_void() {
+        Auto auto = new Auto(1999, "ford", "t", "red", "0001abc");
+
+        when(autoRepository.findByVin(anyString())).thenReturn(auto);
+        autoService.deleteAuto(auto.getVin());
+
+        verify(autoRepository).delete(any(Auto.class));
+    }
+
+    @Test
+    void deleteAuto_withVin_throwsException() {
+        when(autoRepository.findByVin(anyString())).thenReturn(null);
+        assertThatExceptionOfType(AutoNotFoundException.class)
+                .isThrownBy(() -> {
+                    autoService.deleteAuto("vin");
+                });
+
     }
 }

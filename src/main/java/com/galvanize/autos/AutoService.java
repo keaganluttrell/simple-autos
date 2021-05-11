@@ -46,5 +46,11 @@ public class AutoService {
     }
 
     public void deleteAuto(String vin) {
+        Auto foundAuto = autoRepository.findByVin(vin);
+        if (foundAuto != null) {
+            autoRepository.delete(foundAuto);
+        } else {
+            throw new AutoNotFoundException();
+        }
     }
 }
