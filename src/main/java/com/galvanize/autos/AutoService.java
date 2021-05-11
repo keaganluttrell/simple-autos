@@ -1,36 +1,56 @@
 package com.galvanize.autos;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class AutoService {
 
-//    public AutoService() {}
+    AutoRepository autoRepository;
+
+    public AutoService() {
+    }
+
+    public AutoService(AutoRepository autoRepository) {
+        this.autoRepository = autoRepository;
+    }
 
     public AutosList getAllAutos() {
-        return null;
+        return new AutosList(autoRepository.findAll());
     }
 
     public AutosList getAllAutos(String make, String color) {
-        return null;
+        List<Auto> autos = autoRepository.findByMakeContainsAndColorContains(make, color);
+        return new AutosList(autos);
     }
 
     public Auto addAuto(Auto auto) {
-        return null;
+        return autoRepository.save(auto);
     }
 
     public Auto getAutoByVin(String vin) {
-        return null;
+        return autoRepository.findByVin(vin);
     }
 
     public Auto updateAuto(String vin, String color, String owner) {
+        Auto auto = autoRepository.findByVin(vin);
+
+        if (auto != null) {
+            auto.setColor(color);
+            auto.setOwner(owner);
+            return autoRepository.save(auto);
+        }
+
         return null;
     }
 
     public void deleteAuto(String vin) {
+        Auto foundAuto = autoRepository.findByVin(vin);
+        if (foundAuto != null) {
+            autoRepository.delete(foundAuto);
+        } else {
+            throw new AutoNotFoundException();
+        }
     }
 }
