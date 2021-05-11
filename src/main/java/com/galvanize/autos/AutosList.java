@@ -23,12 +23,14 @@ public class AutosList {
         this.autos = autos;
     }
 
+    @Override
     public String toString() {
         return "AutosList{" +
                 "autos=" + autos +
                 "}";
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -36,7 +38,12 @@ public class AutosList {
         return Objects.equals(autos, autosList.autos);
     }
 
+    @Override
     public int hashCode() {
         return Objects.hash(autos);
+    }
+
+    public boolean isEmpty() {
+        return autos.isEmpty();
     }
 }

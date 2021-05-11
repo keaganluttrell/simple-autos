@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -33,25 +34,14 @@ public class AutosControllerTest {
     void setUp() {
         autos = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            Auto auto = new Auto(1990, "ford", "t", "red", "joe", "123456789"+i);
+            Auto auto = new Auto(1990, "ford", "t", "red", "123456789"+i);
             autos.add(auto);
         }
     }
 
-    // GET /api/autos
-    // QUERY PARAMS: color, name
-    // /api/autos?color=blue
-    // /api/autos?make=ford
-    // /api/autos?make=ford&color=red
-    // 204: no autos found
-
     // GET /api/autos 200: at least one auto exists returns list of all autos matching queries
     @Test
     void getAllAutos_noParams_returnsList() throws Exception {
-//        ArrayList<Auto> autosNew = new ArrayList<>();
-//        Auto auto = new Auto(1990, "ford", "t", "red", "joe", "123456789");
-//        autosNew.add(auto);
-
         when(autoService.getAllAutos()).thenReturn(new AutosList(autos));
         System.out.print(autos);
 
@@ -68,6 +58,14 @@ public class AutosControllerTest {
 
         mockMvc.perform(get("/api/autos"))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void getAutos_withParams_returnsAutosList() throws Exception {
+        when(autoService.getAllAutos(anyString(), anyString())).thenReturn(new AutosList(autos));
+        mockMvc.perform(get("/api/autos?make=ford&color=blue"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.autos", hasSize(10)));
     }
 
 /*

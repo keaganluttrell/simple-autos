@@ -7,20 +7,18 @@ public class Auto {
     private final String model;
     private final String vin;
 
-    private String color;
+    private final String color;
     private String owner;
 
     public Auto(int year,
                 String make,
                 String model,
                 String color,
-                String owner,
                 String vin) {
         this.year = year;
         this.make = make;
         this.model = model;
         this.color = color;
-        this.owner = owner;
         this.vin = vin;
     }
 
@@ -46,10 +44,6 @@ public class Auto {
 
     public String getOwner() {
         return owner;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
     }
 
     public void setOwner(String owner) {
