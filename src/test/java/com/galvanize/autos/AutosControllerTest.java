@@ -117,6 +117,25 @@ public class AutosControllerTest {
           204 auto not found
      */
 
+    @Test
+    void getAuto_VIN_returnFoundAuto() throws Exception {
+        Auto auto = autos.get(0);
+        when(autoService.getAutoByVin(anyString())).thenReturn(auto);
+
+        mockMvc.perform(get("/api/autos/" + auto.getVin()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("vin").value(auto.getVin()));
+    }
+
+    @Test
+    void getAuto_VIN_returnNotFoundAuto() throws Exception {
+        Auto auto = autos.get(0);
+        when(autoService.getAutoByVin(anyString())).thenReturn(null);
+
+        mockMvc.perform(get("/api/autos/" + auto.getVin()))
+                .andExpect(status().isNoContent());
+    }
+
     /*
         PATCH /api/autos/{vin}
         PATH: {vin} required

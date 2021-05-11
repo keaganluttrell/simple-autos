@@ -22,4 +22,8 @@ public class AutoService {
     public Auto addAuto(Auto auto) {
         return null;
     }
+
+    public Auto getAutoByVin(String vin) {
+        return null;
+    }
 }

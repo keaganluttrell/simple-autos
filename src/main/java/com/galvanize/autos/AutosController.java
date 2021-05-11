@@ -44,7 +44,15 @@ public class AutosController {
         return autoService.addAuto(auto);
     }
 
-
+    @GetMapping("/{vin}")
+    public ResponseEntity<Auto> getAutoByVin(@PathVariable String vin) {
+        Auto foundAuto = autoService.getAutoByVin(vin);
+        if (foundAuto == null) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(foundAuto);
+        }
+    }
 
 
 }
