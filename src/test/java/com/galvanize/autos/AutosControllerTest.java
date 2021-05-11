@@ -1,17 +1,21 @@
 package com.galvanize.autos;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -34,9 +38,14 @@ public class AutosControllerTest {
     void setUp() {
         autos = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            Auto auto = new Auto(1990, "ford", "t", "red", "123456789"+i);
+            Auto auto = new Auto(1990, "ford", "t", "red", "123456789" + i);
             autos.add(auto);
         }
+    }
+
+    public String toJSON(Auto auto) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(auto);
     }
 
     // GET /api/autos 200: at least one auto exists returns list of all autos matching queries
@@ -74,7 +83,32 @@ public class AutosControllerTest {
         BODY: takes an automobile schema object
            200 adds auto successfully returns auto
            400 Bad request return error message
+
+
      */
+
+    @Test
+    void postNewAuto_WithParams_returnNewAuto() throws Exception {
+        Auto auto = autos.get(0);
+        when(autoService.addAuto(any(Auto.class))).thenReturn(auto);
+
+        mockMvc.perform(post("/api/autos")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJSON(auto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("vin").value(auto.getVin()));
+    }
+
+    @Test
+    void postNewAuto_WithParams_returnsBadRequest() throws Exception {
+        Auto auto = autos.get(0);
+        when(autoService.addAuto(any(Auto.class))).thenThrow(InvalidAutoException.class);
+
+        mockMvc.perform(post("/api/autos")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJSON(auto)))
+                .andExpect(status().isBadRequest());
+    }
 
     /*
         GET /api/autos/{vin}

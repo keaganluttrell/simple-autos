@@ -1,10 +1,8 @@
 package com.galvanize.autos;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,13 +17,18 @@ public class AutosController {
         this.autoService = autoService;
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public void InvalidAutoExceptionHandler(InvalidAutoException exception) {
+    }
+
     @GetMapping
     public ResponseEntity<AutosList> getAllAutos(@RequestParam(required = false) String make,
                                                  @RequestParam(required = false) String color) {
         AutosList foundAutos;
 
         if (color == null && make == null) {
-             foundAutos = autoService.getAllAutos();
+            foundAutos = autoService.getAllAutos();
         } else {
             foundAutos = autoService.getAllAutos(make, color);
         }
@@ -35,6 +38,13 @@ public class AutosController {
         }
         return ResponseEntity.ok(foundAutos);
     }
+
+    @PostMapping
+    public Auto addAuto(@RequestBody Auto auto) {
+        return autoService.addAuto(auto);
+    }
+
+
 
 
 }

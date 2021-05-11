@@ -18,4 +18,8 @@ public class AutoService {
     public AutosList getAllAutos(String make, String color) {
         return null;
     }
+
+    public Auto addAuto(Auto auto) {
+        return null;
+    }
 }
