@@ -19,7 +19,7 @@ public class AutoService {
     }
 
     public AutosList getAllAutos(String make, String color) {
-        return null;
+        return new AutosList(autoRepository.findByMakeContainsAndColorContains(make, color));
     }
 
     public Auto addAuto(Auto auto) {

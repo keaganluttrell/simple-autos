@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 
@@ -30,6 +31,16 @@ public class AutoServiceTest {
         Auto auto = new Auto(1999, "ford", "t", "red", "0001abc");
         when(autoRepository.findAll()).thenReturn(Arrays.asList(auto));
         AutosList autosList = autoService.getAllAutos();
+        assertNotNull(autosList);
+        assertFalse(autosList.isEmpty());
+    }
+
+    @Test
+    void getAutos_withSearchParams_returnsList() {
+        Auto auto = new Auto(1999, "ford", "t", "red", "0001abc");
+
+        when(autoRepository.findByMakeContainsAndColorContains(anyString(), anyString())).thenReturn(Arrays.asList(auto));
+        AutosList autosList = autoService.getAllAutos(auto.getMake(), auto.getColor());
         assertNotNull(autosList);
         assertFalse(autosList.isEmpty());
     }
