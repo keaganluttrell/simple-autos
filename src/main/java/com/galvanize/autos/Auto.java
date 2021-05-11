@@ -7,7 +7,7 @@ public class Auto {
     private final String model;
     private final String vin;
 
-    private final String color;
+    private String color;
     private String owner;
 
     public Auto(int year,
@@ -44,6 +44,10 @@ public class Auto {
 
     public String getOwner() {
         return owner;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public void setOwner(String owner) {

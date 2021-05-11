@@ -43,7 +43,7 @@ public class AutosControllerTest {
         }
     }
 
-    public String toJSON(Auto auto) throws JsonProcessingException {
+    public String toJSON(Object auto) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(auto);
     }
@@ -143,9 +143,46 @@ public class AutosControllerTest {
           200 returns an updated auto that matches vin property
           204 auto not found
           400 bad request returns message
+          create update onwer object
+          probably change color from final
      */
 
-        /*
+    @Test
+    void updateAuto_VinColorOwner_returnsUpdatedAuto() throws Exception {
+        Auto auto = autos.get(0);
+        auto.setColor("blue");
+        auto.setOwner("joe");
+        when(autoService.updateAuto(anyString(), anyString(), anyString())).thenReturn(auto);
+
+        mockMvc.perform(patch("/api/autos/" + auto.getVin())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJSON(new UpdateOwnerRequest("joe", "blue"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("owner").value("joe"))
+                .andExpect(jsonPath("color").value("blue"));
+    }
+
+    @Test
+    void updateAuto_VinColorOwner_returnsNotFound() throws Exception {
+        when(autoService.updateAuto(anyString(), anyString(), anyString())).thenReturn(null);
+
+        mockMvc.perform(patch("/api/autos/vinNotFound")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJSON(new UpdateOwnerRequest("joe", "blue"))))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void updateAuto_VinColorOwner_returnsBadRequest() throws Exception {
+        when(autoService.updateAuto(anyString(), anyString(), anyString())).thenThrow(InvalidAutoException.class);
+
+        mockMvc.perform(patch("/api/autos/vinNotFound")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJSON(new UpdateOwnerRequest("joe", "blue"))))
+                .andExpect(status().isBadRequest());
+    }
+
+    /*
         DELETE /api/autos/{vin}
         PATH: {vin} required
           202 auto delete accepted

@@ -54,5 +54,18 @@ public class AutosController {
         }
     }
 
+    @PatchMapping("/{vin}")
+    public ResponseEntity<Auto> updateAuto(@PathVariable String vin,
+                                           @RequestBody UpdateOwnerRequest request) {
+
+        Auto foundAuto = autoService.updateAuto(vin, request.getOwner(), request.getColor());
+        if (foundAuto == null) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(foundAuto);
+        }
+
+    }
+
 
 }

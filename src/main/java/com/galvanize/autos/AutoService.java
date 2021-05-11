@@ -26,4 +26,8 @@ public class AutoService {
     public Auto getAutoByVin(String vin) {
         return null;
     }
+
+    public Auto updateAuto(String vin, String color, String owner) {
+        return null;
+    }
 }
