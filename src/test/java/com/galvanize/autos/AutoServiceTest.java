@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -52,5 +53,16 @@ public class AutoServiceTest {
         AutosList autosList = autoService.getAllAutos("honda", "yellow");
         assertNotNull(autosList);
         assertTrue(autosList.isEmpty());
+    }
+
+    @Test
+    void postAuto_valid_returnsAuto() {
+        Auto auto = new Auto(1999, "ford", "t", "red", "0001abc");
+        when(autoRepository.save(any(Auto.class))).thenReturn(auto);
+
+        Auto returnedAuto = autoService.addAuto(auto);
+
+        assertNotNull(returnedAuto);
+        assertEquals(auto.getMake(), returnedAuto.getMake());
     }
 }

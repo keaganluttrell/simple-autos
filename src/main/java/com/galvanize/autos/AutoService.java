@@ -26,7 +26,7 @@ public class AutoService {
     }
 
     public Auto addAuto(Auto auto) {
-        return null;
+        return autoRepository.save(auto);
     }
 
     public Auto getAutoByVin(String vin) {
