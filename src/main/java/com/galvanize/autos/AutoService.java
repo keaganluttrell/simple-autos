@@ -34,6 +34,14 @@ public class AutoService {
     }
 
     public Auto updateAuto(String vin, String color, String owner) {
+        Auto auto = autoRepository.findByVin(vin);
+
+        if (auto != null) {
+            auto.setColor(color);
+            auto.setOwner(owner);
+            return autoRepository.save(auto);
+        }
+
         return null;
     }
 
