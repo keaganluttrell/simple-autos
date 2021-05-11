@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,5 +44,13 @@ public class AutoServiceTest {
         AutosList autosList = autoService.getAllAutos(auto.getMake(), auto.getColor());
         assertNotNull(autosList);
         assertFalse(autosList.isEmpty());
+    }
+
+    @Test
+    void getAutos_withSearchParams_returnsEmptyList() {
+        when(autoRepository.findByMakeContainsAndColorContains(anyString(), anyString())).thenReturn(new ArrayList<>());
+        AutosList autosList = autoService.getAllAutos("honda", "yellow");
+        assertNotNull(autosList);
+        assertTrue(autosList.isEmpty());
     }
 }

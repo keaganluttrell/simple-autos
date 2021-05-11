@@ -2,6 +2,8 @@ package com.galvanize.autos;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AutoService {
 
@@ -19,7 +21,8 @@ public class AutoService {
     }
 
     public AutosList getAllAutos(String make, String color) {
-        return new AutosList(autoRepository.findByMakeContainsAndColorContains(make, color));
+        List<Auto> autos = autoRepository.findByMakeContainsAndColorContains(make, color);
+        return new AutosList(autos);
     }
 
     public Auto addAuto(Auto auto) {
