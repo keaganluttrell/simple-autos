@@ -69,7 +69,11 @@ public class AutosController {
 
     @DeleteMapping("/{vin}")
     public ResponseEntity deleteAuto(@PathVariable String vin) {
-        autoService.deleteAuto(vin);
+        try {
+           autoService.deleteAuto(vin);
+        } catch(AutoNotFoundException e) {
+            return ResponseEntity.noContent().build();
+        }
 
         return ResponseEntity.accepted().build();
     }
