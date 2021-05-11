@@ -12,7 +12,11 @@ import java.util.List;
 @RequestMapping("/api/autos")
 public class AutosController {
 
-    AutoService autoService = new AutoService();
+    AutoService autoService;
+
+    public AutosController(AutoService autoService) {
+        this.autoService = autoService;
+    }
 
     @GetMapping
     public ResponseEntity<AutosList> getAllAutos() {
