@@ -24,12 +24,12 @@ codeCoverage:
   image: adoptopenjdk:11
   needs:
     - build
-    stage: test
-    script:
-      ./gradlew jacocoTestReport
-      ./gradlew jacocoCodeCoverageVerification
-    allow_failure: true
-    artifacts:
-      when: always
-      paths:
-        - build/jacocoHtml/**
+  stage: test
+  script:
+    ./gradlew jacocoTestReport
+    ./gradlew jacocoCodeCoverageVerification
+  allow_failure: true
+  artifacts:
+    when: always
+    paths:
+      - build/jacocoHtml/**
