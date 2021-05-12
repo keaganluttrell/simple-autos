@@ -9,8 +9,7 @@ public class AutoService {
 
     AutoRepository autoRepository;
 
-    public AutoService() {
-    }
+//    public AutoService() {}
 
     public AutoService(AutoRepository autoRepository) {
         this.autoRepository = autoRepository;
