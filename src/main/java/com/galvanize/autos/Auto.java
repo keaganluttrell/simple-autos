@@ -1,5 +1,10 @@
 package com.galvanize.autos;
 
+import jdk.jfr.Enabled;
+
+import javax.persistence.Entity;
+
+@Entity
 public class Auto {
 
     private int year;
