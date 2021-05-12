@@ -9,9 +9,6 @@ public class AutoService {
 
     AutoRepository autoRepository;
 
-    public AutoService() {
-    }
-
     public AutoService(AutoRepository autoRepository) {
         this.autoRepository = autoRepository;
     }
@@ -21,7 +18,9 @@ public class AutoService {
     }
 
     public AutosList getAllAutos(String make, String color) {
-        List<Auto> autos = autoRepository.findByMakeContainsAndColorContains(make, color);
+        if (make == null) make = "";
+        if (color == null) color = "";
+        List<Auto> autos = autoRepository.findByMakeContainsAndColorContains(make + "%", color + "%");
         return new AutosList(autos);
     }
 
@@ -33,7 +32,7 @@ public class AutoService {
         return autoRepository.findByVin(vin);
     }
 
-    public Auto updateAuto(String vin, String color, String owner) {
+    public Auto updateAuto(String vin, String owner, String color) {
         Auto auto = autoRepository.findByVin(vin);
 
         if (auto != null) {
