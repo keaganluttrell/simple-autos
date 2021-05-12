@@ -1,7 +1,7 @@
 stages:
   - build
   - test
-
+  - codeCoverage
 build:
   image: adoptopenjdk:11
   stage: build
@@ -25,7 +25,7 @@ codeCoverage:
   needs:
     - build
     - test
-  stage: test
+  stage: codeCoverage
   script:
     ./gradlew jacocoTestReport
     ./gradlew jacocoCodeCoverageVerification
