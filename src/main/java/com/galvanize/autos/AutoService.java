@@ -20,7 +20,9 @@ public class AutoService {
     }
 
     public AutosList getAllAutos(String make, String color) {
-        List<Auto> autos = autoRepository.findByMakeContainsAndColorContains(make, color);
+        if (make == null) make = "";
+        if (color == null) color = "";
+        List<Auto> autos = autoRepository.findByMakeContainsAndColorContains(make + "%", color + "%");
         return new AutosList(autos);
     }
 
