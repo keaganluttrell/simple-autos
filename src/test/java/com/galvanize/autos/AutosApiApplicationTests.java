@@ -2,6 +2,7 @@ package com.galvanize.autos;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.RestTemplate;
 
+import org.apache.http.client.HttpClient;
+
+import javax.print.attribute.standard.Media;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,6 +26,7 @@ class AutosApiApplicationTests {
 
     @Autowired
     TestRestTemplate restTemplate;
+    private RestTemplate patchRestTemplate;
 
     @Autowired
     AutoRepository autoRepository;
@@ -28,6 +35,10 @@ class AutosApiApplicationTests {
 
     @BeforeEach
     void setup() {
+        patchRestTemplate = restTemplate.getRestTemplate();
+        HttpClient httpClient = HttpClientBuilder.create().build();
+        patchRestTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory(httpClient));
+
         autos = new ArrayList<>();
         Auto auto;
         String[] colors = {"red", "blue", "green", "yellow", "black"};
@@ -144,9 +155,47 @@ class AutosApiApplicationTests {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
-""
+    @Test
+    void getAuto_vin_returnsAuto() {
+        Auto auto = autos.get(0);
+        String vin = auto.getVin();
+        String uri = "/api/autos/" + vin;
 
+        ResponseEntity<Auto> response = restTemplate.getForEntity(uri, Auto.class);
 
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(auto.getVin(), response.getBody().getVin());
+        assertEquals(auto.getMake(), response.getBody().getMake());
+        assertEquals(auto.getModel(), response.getBody().getModel());
+    }
+
+    @Test
+    void getAuto_vin_returnsNoContent() {
+        String vin = "notFound";
+        String uri = "/api/autos/" + vin;
+
+        ResponseEntity<Auto> response = restTemplate.getForEntity(uri, Auto.class);
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+
+    @Test
+    void updateAuto_withOwner_returnsUpdatedAuto() throws JsonProcessingException {
+        Auto auto = autos.get(0);
+        String vin = auto.getVin();
+        String uri = "/api/autos/" + vin;
+
+        String body = toJSON(new UpdateOwnerRequest("bob", "white"));
+
+        ResponseEntity responseEntity = patchRestTemplate
+                .exchange(uri, HttpMethod.PATCH, getPostRequestHeaders(body), Auto.class);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        Auto returnedAuto = (Auto) responseEntity.getBody();
+        assertEquals("bob", returnedAuto.getOwner());
+        assertEquals("white", returnedAuto.getColor());
+
+    }
 
 
 
@@ -186,5 +235,15 @@ class AutosApiApplicationTests {
         return mapper.writeValueAsString(auto);
     }
 
+    public HttpEntity getPostRequestHeaders(String body) {
+        List acceptTypes = new ArrayList();
 
+        acceptTypes.add(MediaType.APPLICATION_JSON);
+
+        HttpHeaders reqHeaders = new HttpHeaders();
+        reqHeaders.setContentType(MediaType.APPLICATION_JSON);
+        reqHeaders.setAccept(acceptTypes);
+
+        return new HttpEntity(body, reqHeaders);
+    }
 }

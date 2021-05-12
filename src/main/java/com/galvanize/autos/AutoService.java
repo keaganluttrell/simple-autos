@@ -34,7 +34,7 @@ public class AutoService {
         return autoRepository.findByVin(vin);
     }
 
-    public Auto updateAuto(String vin, String color, String owner) {
+    public Auto updateAuto(String vin, String owner, String color) {
         Auto auto = autoRepository.findByVin(vin);
 
         if (auto != null) {
