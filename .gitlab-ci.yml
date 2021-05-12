@@ -32,4 +32,4 @@ codeCoverage:
   artifacts:
     when: always
     paths:
-      - build/jacocoHtml/**
+      - build/jacocoHtml/index.html
