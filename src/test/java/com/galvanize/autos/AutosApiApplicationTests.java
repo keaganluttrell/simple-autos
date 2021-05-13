@@ -62,6 +62,8 @@ class AutosApiApplicationTests {
     @Test
     void getAutos_noParams_returnsAutoList() {
         ResponseEntity<AutosList> response = restTemplate.getForEntity("/api/autos", AutosList.class);
+
+        assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(autos.size(), response.getBody().getAutos().size());
     }
@@ -79,6 +81,7 @@ class AutosApiApplicationTests {
         ResponseEntity<AutosList> response = restTemplate.getForEntity("/api/autos?make=" + testMake, AutosList.class);
         ArrayList<Auto> filtered = filter("make", testMake);
 
+        assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(filtered.size(), response.getBody().getAutos().size());
     }
@@ -89,6 +92,7 @@ class AutosApiApplicationTests {
         ResponseEntity<AutosList> response = restTemplate.getForEntity("/api/autos?color=" + testColor, AutosList.class);
         ArrayList<Auto> filtered = filter("color", testColor);
 
+        assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(filtered.size(), response.getBody().getAutos().size());
     }
@@ -101,6 +105,7 @@ class AutosApiApplicationTests {
         ResponseEntity<AutosList> response = restTemplate.getForEntity(uri, AutosList.class);
         ArrayList<Auto> filtered = filterBoth(testMake, testColor);
 
+        assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(filtered.size(), response.getBody().getAutos().size());
     }
@@ -135,7 +140,7 @@ class AutosApiApplicationTests {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-        HttpEntity<Auto> request = new HttpEntity(body, headers);
+        HttpEntity<?> request = new HttpEntity<>(body, headers);
         ResponseEntity<Auto> response = restTemplate.postForEntity(uri, request, Auto.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -149,7 +154,7 @@ class AutosApiApplicationTests {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-        HttpEntity<Auto> request = new HttpEntity("", headers);
+        HttpEntity<?> request = new HttpEntity<>("", headers);
         ResponseEntity<Auto> response = restTemplate.postForEntity(uri, request, Auto.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -163,6 +168,7 @@ class AutosApiApplicationTests {
 
         ResponseEntity<Auto> response = restTemplate.getForEntity(uri, Auto.class);
 
+        assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(auto.getVin(), response.getBody().getVin());
         assertEquals(auto.getMake(), response.getBody().getMake());
@@ -187,20 +193,71 @@ class AutosApiApplicationTests {
 
         String body = toJSON(new UpdateOwnerRequest("bob", "white"));
 
-        ResponseEntity responseEntity = patchRestTemplate
+        ResponseEntity<?> responseEntity = patchRestTemplate
                 .exchange(uri, HttpMethod.PATCH, getPostRequestHeaders(body), Auto.class);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         Auto returnedAuto = (Auto) responseEntity.getBody();
+
+        assertNotNull(returnedAuto);
         assertEquals("bob", returnedAuto.getOwner());
         assertEquals("white", returnedAuto.getColor());
 
     }
 
+    @Test
+    void updateAuto_withOwner_returnsNoContent() throws JsonProcessingException {
+        String vin = "vinNotFound";
+        String uri = "/api/autos/" + vin;
 
+        String body = toJSON(new UpdateOwnerRequest("bob", "white"));
 
+        ResponseEntity<?> responseEntity = patchRestTemplate
+                .exchange(uri, HttpMethod.PATCH, getPostRequestHeaders(body), Auto.class);
 
+        assertEquals(HttpStatus.NO_CONTENT, responseEntity.getStatusCode());
 
+    }
+
+    @Test
+    void updateAuto_withOwner_returnsBadRequest() throws JsonProcessingException {
+        Auto auto = autos.get(0);
+        String vin = auto.getVin();
+        String uri = "/api/autos/" + vin;
+
+        String body = "";
+
+        ResponseEntity<?> responseEntity = patchRestTemplate
+                .exchange(uri, HttpMethod.PATCH, getPostRequestHeaders(body), Auto.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+    }
+
+    @Test
+    void deleteAuto_vin_returnsSuccess() {
+        Auto auto = autos.get(0);
+        String vin = auto.getVin();
+        String uri = "/api/autos/" + vin;
+
+        ResponseEntity<Auto> response = restTemplate.getForEntity(uri, Auto.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        restTemplate.delete(uri);
+
+        ResponseEntity<Auto> responseTwo = restTemplate.getForEntity(uri, Auto.class);
+        assertEquals(HttpStatus.NO_CONTENT, responseTwo.getStatusCode());
+    }
+
+    @Test
+    void deleteAuto_vinNotFound() {
+        String vin = "vinNotFound";
+        String uri = "/api/autos/" + vin;
+
+        restTemplate.delete(uri);
+
+        ResponseEntity<AutosList> responseTwo = restTemplate.getForEntity("/api/autos", AutosList.class);
+        assertNotNull(responseTwo.getBody());
+        assertEquals(autos.size(), responseTwo.getBody().getAutos().size());
+    }
 
 
 
@@ -235,15 +292,11 @@ class AutosApiApplicationTests {
         return mapper.writeValueAsString(auto);
     }
 
-    public HttpEntity getPostRequestHeaders(String body) {
-        List acceptTypes = new ArrayList();
+    public HttpEntity<?> getPostRequestHeaders(String body) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-        acceptTypes.add(MediaType.APPLICATION_JSON);
-
-        HttpHeaders reqHeaders = new HttpHeaders();
-        reqHeaders.setContentType(MediaType.APPLICATION_JSON);
-        reqHeaders.setAccept(acceptTypes);
-
-        return new HttpEntity(body, reqHeaders);
+        return new HttpEntity<>(body, headers);
     }
 }
