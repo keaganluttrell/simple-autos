@@ -8,8 +8,13 @@ build:
   stage: build
   script:
     - ./gradlew bootJar
+  cache:
+    key: GRADLE-BUILD-FILES
+    paths:
+      - build/
   artifacts:
     paths:
+      - build/classes/java/
       - build/libs/*.jar
 test:
   image: adoptopenjdk:11
@@ -20,6 +25,7 @@ test:
     ./gradlew test
   artifacts:
     paths:
+      - build/classes/java/
       - build/test-results/test/*.xml
 codeCoverage:
   image: adoptopenjdk:11
@@ -34,7 +40,7 @@ codeCoverage:
   artifacts:
     when: always
     paths:
-      - build/reports/jacoco/test/html/
+      - build/reports/jacoco/
 docker:
   image: docker:20
   needs:
@@ -51,4 +57,3 @@ docker:
     - docker push "$CI_REGISTRY_IMAGE":"$CI_PIPELINE_IID"
     - docker tag "$CI_REGISTRY_IMAGE":"$CI_PIPELINE_IID" "$CI_REGISTRY_IMAGE":"latest"
     - docker push "$CI_REGISTRY_IMAGE":"latest"
-
