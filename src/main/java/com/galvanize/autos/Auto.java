@@ -18,7 +18,10 @@ public class Auto {
     private int year;
     private String make;
     private String model;
+
+    @Column(unique = true)
     private String vin;
+
     private String color;
 
     @Column(name = "owner_name")
