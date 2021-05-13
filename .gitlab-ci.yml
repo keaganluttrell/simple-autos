@@ -67,4 +67,4 @@ heroku:
       - gem install dpl
       - dpl --provider=heroku --app=vw-autos-api --api-key=$HEROKU_API
   only:
-      - master
+      - main
