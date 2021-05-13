@@ -59,8 +59,11 @@ docker:
     - docker tag "$CI_REGISTRY_IMAGE":"$CI_PIPELINE_IID" "$CI_REGISTRY_IMAGE":"latest"
     - docker push "$CI_REGISTRY_IMAGE":"latest"
 heroku:
-  stage: heroku
   image: ruby:latest
+  needs:
+  - build
+  - test
+  stage: heroku
   script:
       - apt-get update -qy
       - apt-get install -y ruby-dev
