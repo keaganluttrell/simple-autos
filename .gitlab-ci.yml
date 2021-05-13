@@ -68,6 +68,6 @@ heroku:
       - apt-get update -qy
       - apt-get install -y ruby-dev
       - gem install dpl
-      - dpl --provider=heroku --app=vw-autos-api --api-key=$HEROKU_API
+      - dpl --provider=heroku --app=autos-api-yvonne-keagan --api-key=$HEROKU_API
   only:
       - main
