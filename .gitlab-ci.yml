@@ -34,7 +34,7 @@ codeCoverage:
   artifacts:
     when: always
     paths:
-      - build/reports/jacoco/
+      - build/reports/jacoco/test/html/
 docker:
   image: docker:20
   needs:
