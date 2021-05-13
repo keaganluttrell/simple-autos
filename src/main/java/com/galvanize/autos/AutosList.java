@@ -2,7 +2,6 @@ package com.galvanize.autos;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class AutosList {
     private List<Auto> autos;
@@ -19,9 +18,9 @@ public class AutosList {
         return autos;
     }
 
-    public void setAutos(List<Auto> autos) {
-        this.autos = autos;
-    }
+//    public void setAutos(List<Auto> autos) {
+//        this.autos = autos;
+//    }
 
     public boolean isEmpty() {
         return autos.isEmpty();
