@@ -33,4 +33,4 @@ codeCoverage:
   artifacts:
     when: always
     paths:
-      - build/jacocoHtml/index.html
+      - build/reports/jacoco/
