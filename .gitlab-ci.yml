@@ -35,8 +35,8 @@ codeCoverage:
     - test
   stage: codeCoverage
   script:
-    ./gradlew jacocoTestReport
-    ./gradlew jacocoTestCoverageVerification
+    - ./gradlew jacocoTestReport
+    - ./gradlew jacocoTestCoverageVerification
   allow_failure: true
   artifacts:
     when: always
