@@ -4,6 +4,7 @@ stages:
   - codeCoverage
   - docker
   - heroku
+  - deploy
 build:
   image: adoptopenjdk:11
   stage: build
@@ -71,3 +72,16 @@ heroku:
       - dpl --provider=heroku --app=autos-api-yvonne-keagan --api-key=$HEROKU_API
   only:
       - main
+deploy:
+  stage: deploy
+  image: registry.gitlab.com/galv-vmw-apr-2021/capstone/base-aws-eks-image:latest
+  before_script:
+    - export IMAGE="$CI_REGISTRY_IMAGE":"$CI_PIPELINE_IID"
+    - aws configure set region us-west-2
+    - aws configure set output json
+    - aws eks update-kubeconfig --name "$CLUSTER_NAME"
+    - aws sts get-caller-identity
+
+  script:
+    - envsubst < simple-autos-deploy.yml | kubectl apply -f -
+    - kubectl apply -f service-deploy.yml
